@@ -1,8 +1,8 @@
 export default function DashboardPage() {
   return (
-    <div className="flex flex-col gap-2">
-      <h1 className="text-2xl font-semibold">Dashboard</h1>
-      <p className="text-muted-foreground">Overview content goes here.</p>
+    <div className="flex flex-col gap-1">
+      <h1 className="font-heading text-2xl font-semibold tracking-tight">Dashboard</h1>
+      <p className="text-sm text-muted-foreground">Overview content goes here.</p>
     </div>
   );
 }
