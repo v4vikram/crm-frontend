@@ -23,6 +23,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useAuthStore } from "@/features/auth/auth.store";
 
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
@@ -31,11 +32,13 @@ const navItems = [
   { title: "Tasks", url: "/dashboard/tasks", icon: CheckSquare },
   { title: "Notes", url: "/dashboard/notes", icon: StickyNote },
   { title: "Attachments", url: "/dashboard/attachments", icon: Paperclip },
-  { title: "Users", url: "/dashboard/users", icon: ShieldCheck },
+  { title: "Users", url: "/dashboard/users", icon: ShieldCheck, adminOnly: true },
 ];
 
 export function AppSidebar() {
   const pathname = usePathname();
+  const role = useAuthStore((state) => state.user?.role);
+  const visibleNavItems = navItems.filter((item) => !item.adminOnly || role === "ADMIN");
 
   return (
     <Sidebar collapsible="icon">
@@ -52,7 +55,7 @@ export function AppSidebar() {
           <SidebarGroupLabel>Workspace</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
+              {visibleNavItems.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild isActive={pathname === item.url} tooltip={item.title}>
                     <Link href={item.url}>

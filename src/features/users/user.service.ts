@@ -1,6 +1,6 @@
 import { apiClient } from "@/services/api";
 import type { PaginatedResult } from "@/types/api";
-import type { ListUsersQuery, User } from "./user.types";
+import type { AssignableUser, ListUsersQuery, User } from "./user.types";
 
 export const userService = {
   list: (query: ListUsersQuery, accessToken: string) => {
@@ -12,4 +12,7 @@ export const userService = {
 
     return apiClient.get<PaginatedResult<User>>(`/users?${params.toString()}`, { accessToken });
   },
+
+  lookup: (accessToken: string) =>
+    apiClient.get<AssignableUser[]>("/users/lookup", { accessToken }),
 };

@@ -14,3 +14,9 @@ export interface ListUsersQuery {
   search?: string;
   role?: Role;
 }
+
+export interface AssignableUser {
+  id: string;
+  name: string;
+  email: string;
+}

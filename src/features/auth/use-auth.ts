@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { authService } from "./auth.service";
 import { useAuthStore } from "./auth.store";
 import type { ForgotPasswordInput, LoginInput, RegisterInput, ResetPasswordInput } from "./auth.types";
@@ -22,28 +22,40 @@ export const useBootstrapSession = () => {
 
 export const useLogin = () => {
   const setSession = useAuthStore((state) => state.setSession);
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (input: LoginInput) => authService.login(input),
-    onSuccess: ({ user, accessToken }) => setSession(user, accessToken),
+    onSuccess: ({ user, accessToken }) => {
+      queryClient.clear();
+      setSession(user, accessToken);
+    },
   });
 };
 
 export const useRegister = () => {
   const setSession = useAuthStore((state) => state.setSession);
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (input: RegisterInput) => authService.register(input),
-    onSuccess: ({ user, accessToken }) => setSession(user, accessToken),
+    onSuccess: ({ user, accessToken }) => {
+      queryClient.clear();
+      setSession(user, accessToken);
+    },
   });
 };
 
 export const useLogout = () => {
   const clearSession = useAuthStore((state) => state.clearSession);
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: () => authService.logout(),
-    onSuccess: () => clearSession(),
+    onSuccess: () => {
+      clearSession();
+      queryClient.clear();
+    },
   });
 };
 
