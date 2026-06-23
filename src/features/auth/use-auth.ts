@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { authService } from "./auth.service";
 import { useAuthStore } from "./auth.store";
-import type { LoginInput, RegisterInput } from "./auth.types";
+import type { ForgotPasswordInput, LoginInput, RegisterInput, ResetPasswordInput } from "./auth.types";
 
 export const useBootstrapSession = () => {
   const setSession = useAuthStore((state) => state.setSession);
@@ -46,3 +46,13 @@ export const useLogout = () => {
     onSuccess: () => clearSession(),
   });
 };
+
+export const useForgotPassword = () =>
+  useMutation({
+    mutationFn: (input: ForgotPasswordInput) => authService.forgotPassword(input),
+  });
+
+export const useResetPassword = () =>
+  useMutation({
+    mutationFn: (input: ResetPasswordInput) => authService.resetPassword(input),
+  });
