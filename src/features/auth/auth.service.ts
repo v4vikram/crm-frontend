@@ -4,12 +4,10 @@ import type {
   AuthUser,
   ForgotPasswordInput,
   LoginInput,
-  RegisterInput,
   ResetPasswordInput,
 } from "./auth.types";
 
 export const authService = {
-  register: (input: RegisterInput) => apiClient.post<AuthSession>("/auth/register", input),
   login: (input: LoginInput) => apiClient.post<AuthSession>("/auth/login", input),
   refresh: () => apiClient.post<{ accessToken: string }>("/auth/refresh"),
   logout: () => apiClient.post<null>("/auth/logout"),

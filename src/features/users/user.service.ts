@@ -1,8 +1,23 @@
 import { apiClient } from "@/services/api";
 import type { PaginatedResult } from "@/types/api";
-import type { AssignableUser, ListUsersQuery, User } from "./user.types";
+import type {
+  AssignableUser,
+  CreateUserInput,
+  ListUsersQuery,
+  UpdateUserInput,
+  User,
+} from "./user.types";
 
 export const userService = {
+  create: (input: CreateUserInput, accessToken: string) =>
+    apiClient.post<User>("/users", input, { accessToken }),
+
+  update: (id: string, input: UpdateUserInput, accessToken: string) =>
+    apiClient.patch<User>(`/users/${id}`, input, { accessToken }),
+
+  delete: (id: string, accessToken: string) =>
+    apiClient.delete<null>(`/users/${id}`, { accessToken }),
+
   list: (query: ListUsersQuery, accessToken: string) => {
     const params = new URLSearchParams();
     params.set("page", String(query.page));

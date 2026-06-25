@@ -79,13 +79,6 @@ export function LoginForm() {
             {login.isPending ? "Logging in..." : "Log in"}
           </Button>
         </Field>
-
-        <p className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account?{" "}
-          <Link href="/register" className="underline underline-offset-4">
-            Register
-          </Link>
-        </p>
       </FieldGroup>
     </form>
   );

@@ -1,5 +1,13 @@
+import { MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -14,6 +22,8 @@ import type { User } from "./user.types";
 interface UsersTableProps {
   users: User[];
   isLoading: boolean;
+  onEdit: (user: User) => void;
+  onDelete: (user: User) => void;
 }
 
 const formatDate = (value: string) =>
@@ -23,7 +33,7 @@ const formatDate = (value: string) =>
     day: "numeric",
   });
 
-export function UsersTable({ users, isLoading }: UsersTableProps) {
+export function UsersTable({ users, isLoading, onEdit, onDelete }: UsersTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -32,6 +42,7 @@ export function UsersTable({ users, isLoading }: UsersTableProps) {
           <TableHead>Email</TableHead>
           <TableHead>Role</TableHead>
           <TableHead>Joined</TableHead>
+          <TableHead className="w-10" />
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -53,12 +64,13 @@ export function UsersTable({ users, isLoading }: UsersTableProps) {
               <TableCell>
                 <Skeleton className="h-4 w-20" />
               </TableCell>
+              <TableCell />
             </TableRow>
           ))}
 
         {!isLoading && users.length === 0 && (
           <TableRow>
-            <TableCell colSpan={4} className="h-24 text-center text-muted-foreground">
+            <TableCell colSpan={5} className="h-24 text-center text-muted-foreground">
               No users found.
             </TableCell>
           </TableRow>
@@ -83,6 +95,21 @@ export function UsersTable({ users, isLoading }: UsersTableProps) {
               </TableCell>
               <TableCell className="text-muted-foreground">
                 {formatDate(user.createdAt)}
+              </TableCell>
+              <TableCell>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon-sm" aria-label="User actions">
+                      <MoreHorizontal className="size-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onSelect={() => onEdit(user)}>Edit</DropdownMenuItem>
+                    <DropdownMenuItem variant="destructive" onSelect={() => onDelete(user)}>
+                      Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </TableCell>
             </TableRow>
           ))}
