@@ -19,6 +19,8 @@ export const useCreateLead = () => {
     onSuccess: () => {
       toast.success("Lead created");
       void queryClient.invalidateQueries({ queryKey: ["leads"] });
+      void queryClient.invalidateQueries({ queryKey: ["analytics"] });
+      void queryClient.invalidateQueries({ queryKey: ["notifications"] });
     },
     onError: (error) => toast.error(errorMessage(error, "Failed to create lead")),
   });
@@ -34,6 +36,7 @@ export const useUpdateLead = () => {
     onSuccess: () => {
       toast.success("Lead updated");
       void queryClient.invalidateQueries({ queryKey: ["leads"] });
+      void queryClient.invalidateQueries({ queryKey: ["analytics"] });
     },
     onError: (error) => toast.error(errorMessage(error, "Failed to update lead")),
   });
@@ -48,6 +51,7 @@ export const useDeleteLead = () => {
     onSuccess: () => {
       toast.success("Lead deleted");
       void queryClient.invalidateQueries({ queryKey: ["leads"] });
+      void queryClient.invalidateQueries({ queryKey: ["analytics"] });
     },
     onError: (error) => toast.error(errorMessage(error, "Failed to delete lead")),
   });
