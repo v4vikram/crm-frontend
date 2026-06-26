@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/features/auth/auth.store";
+import { ConvertLeadDialog } from "@/features/customers/convert-lead-dialog";
+import type { ConvertLeadFormValues } from "@/features/customers/customer.validation";
+import { useConvertLead } from "@/features/customers/use-customer-mutations";
 import { ApiClientError } from "@/services/api";
 import { DeleteLeadDialog } from "./delete-lead-dialog";
 import { LeadForm } from "./lead-form";
@@ -15,7 +18,7 @@ import { LeadsFilters } from "./leads-filters";
 import { LeadsPagination } from "./leads-pagination";
 import { LeadsTable } from "./leads-table";
 
-const PAGE_SIZE = 10;
+const PAGE_SIZE = 1;
 
 export function LeadList() {
   const isAdmin = useAuthStore((state) => state.user?.role === "ADMIN");
@@ -28,6 +31,7 @@ export function LeadList() {
   const [formOpen, setFormOpen] = useState(false);
   const [editingLead, setEditingLead] = useState<Lead | null>(null);
   const [deletingLead, setDeletingLead] = useState<Lead | null>(null);
+  const [convertingLead, setConvertingLead] = useState<Lead | null>(null);
 
   useEffect(() => {
     const timeout = setTimeout(() => setDebouncedSearch(search.trim()), 300);
@@ -49,6 +53,7 @@ export function LeadList() {
   const createLead = useCreateLead();
   const updateLead = useUpdateLead();
   const deleteLead = useDeleteLead();
+  const convertLead = useConvertLead();
 
   const openCreateForm = () => {
     setEditingLead(null);
@@ -95,6 +100,22 @@ export function LeadList() {
     deleteLead.mutate(deletingLead.id, { onSuccess: () => setDeletingLead(null) });
   };
 
+  const handleConvert = (values: ConvertLeadFormValues) => {
+    if (!convertingLead) return;
+    convertLead.mutate(
+      {
+        leadId: convertingLead.id,
+        input: {
+          address: values.address || undefined,
+          dealValue: values.dealValue === "" ? undefined : Number(values.dealValue),
+          status: values.status,
+          remarks: values.remarks || undefined,
+        },
+      },
+      { onSuccess: () => setConvertingLead(null) },
+    );
+  };
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -126,6 +147,7 @@ export function LeadList() {
           isLoading={isLoading}
           onEdit={openEditForm}
           onDelete={isAdmin ? setDeletingLead : undefined}
+          onConvert={setConvertingLead}
         />
       </div>
 
@@ -146,6 +168,13 @@ export function LeadList() {
         onOpenChange={(open) => !open && setDeletingLead(null)}
         isPending={deleteLead.isPending}
         onConfirm={handleConfirmDelete}
+      />
+
+      <ConvertLeadDialog
+        lead={convertingLead}
+        onOpenChange={(open) => !open && setConvertingLead(null)}
+        isPending={convertLead.isPending}
+        onSubmit={handleConvert}
       />
     </div>
   );

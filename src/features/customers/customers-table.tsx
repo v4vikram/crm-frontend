@@ -16,14 +16,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Lead } from "./lead.types";
+import type { Customer } from "./customer.types";
 
-interface LeadsTableProps {
-  leads: Lead[];
+interface CustomersTableProps {
+  customers: Customer[];
   isLoading: boolean;
-  onEdit: (lead: Lead) => void;
-  onDelete?: (lead: Lead) => void;
-  onConvert?: (lead: Lead) => void;
+  onEdit: (customer: Customer) => void;
+  onDelete?: (customer: Customer) => void;
 }
 
 const formatDate = (value: string) =>
@@ -33,13 +32,18 @@ const formatDate = (value: string) =>
     day: "numeric",
   });
 
-const statusVariant = (status: Lead["status"]): "default" | "secondary" | "destructive" => {
-  if (status === "WON") return "default";
-  if (status === "LOST") return "destructive";
+const formatDealValue = (value: number | null) =>
+  value === null
+    ? "—"
+    : value.toLocaleString(undefined, { style: "currency", currency: "USD", maximumFractionDigits: 0 });
+
+const statusVariant = (status: Customer["status"]): "default" | "secondary" | "destructive" => {
+  if (status === "ACTIVE") return "default";
+  if (status === "CHURNED") return "destructive";
   return "secondary";
 };
 
-export function LeadsTable({ leads, isLoading, onEdit, onDelete, onConvert }: LeadsTableProps) {
+export function CustomersTable({ customers, isLoading, onEdit, onDelete }: CustomersTableProps) {
   return (
     <Table>
       <TableHeader>
@@ -47,9 +51,9 @@ export function LeadsTable({ leads, isLoading, onEdit, onDelete, onConvert }: Le
           <TableHead>Contact</TableHead>
           <TableHead>Company</TableHead>
           <TableHead>Status</TableHead>
-          <TableHead>Source</TableHead>
+          <TableHead>Deal value</TableHead>
           <TableHead>Assigned to</TableHead>
-          <TableHead>Created</TableHead>
+          <TableHead>Customer since</TableHead>
           <TableHead className="w-10" />
         </TableRow>
       </TableHeader>
@@ -79,52 +83,45 @@ export function LeadsTable({ leads, isLoading, onEdit, onDelete, onConvert }: Le
             </TableRow>
           ))}
 
-        {!isLoading && leads.length === 0 && (
+        {!isLoading && customers.length === 0 && (
           <TableRow>
             <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
-              No leads found.
+              No customers yet.
             </TableCell>
           </TableRow>
         )}
 
         {!isLoading &&
-          leads.map((lead) => (
-            <TableRow key={lead.id}>
+          customers.map((customer) => (
+            <TableRow key={customer.id}>
               <TableCell>
                 <div className="flex flex-col">
-                  <span className="font-medium">{lead.contactName}</span>
-                  {lead.email && (
-                    <span className="text-sm text-muted-foreground">{lead.email}</span>
+                  <span className="font-medium">{customer.contactName}</span>
+                  {customer.email && (
+                    <span className="text-sm text-muted-foreground">{customer.email}</span>
                   )}
                 </div>
               </TableCell>
-              <TableCell className="text-muted-foreground">{lead.companyName ?? "—"}</TableCell>
+              <TableCell className="text-muted-foreground">{customer.companyName ?? "—"}</TableCell>
               <TableCell>
-                <Badge variant={statusVariant(lead.status)}>{lead.status.replace(/_/g, " ")}</Badge>
+                <Badge variant={statusVariant(customer.status)}>{customer.status}</Badge>
               </TableCell>
+              <TableCell className="text-muted-foreground">{formatDealValue(customer.dealValue)}</TableCell>
               <TableCell className="text-muted-foreground">
-                {lead.source.replace(/_/g, " ")}
+                {customer.assignedTo?.name ?? "Unassigned"}
               </TableCell>
-              <TableCell className="text-muted-foreground">
-                {lead.assignedTo?.name ?? "Unassigned"}
-              </TableCell>
-              <TableCell className="text-muted-foreground">{formatDate(lead.createdAt)}</TableCell>
+              <TableCell className="text-muted-foreground">{formatDate(customer.createdAt)}</TableCell>
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon-sm" aria-label="Lead actions">
+                    <Button variant="ghost" size="icon-sm" aria-label="Customer actions">
                       <MoreHorizontal className="size-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem onSelect={() => onEdit(lead)}>Edit</DropdownMenuItem>
-                    {onConvert && lead.status === "WON" && !lead.customer && (
-                      <DropdownMenuItem onSelect={() => onConvert(lead)}>
-                        Convert to customer
-                      </DropdownMenuItem>
-                    )}
+                    <DropdownMenuItem onSelect={() => onEdit(customer)}>Edit</DropdownMenuItem>
                     {onDelete && (
-                      <DropdownMenuItem variant="destructive" onSelect={() => onDelete(lead)}>
+                      <DropdownMenuItem variant="destructive" onSelect={() => onDelete(customer)}>
                         Delete
                       </DropdownMenuItem>
                     )}

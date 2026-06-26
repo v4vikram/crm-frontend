@@ -37,6 +37,7 @@ export interface Lead {
   createdById: string;
   createdAt: string;
   updatedAt: string;
+  customer: { id: string } | null;
 }
 
 export interface ListLeadsQuery {
