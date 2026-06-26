@@ -1,3 +1,4 @@
+import { AiInsights } from "@/features/ai/ai-insights";
 import { AnalyticsOverview } from "@/features/analytics/analytics-overview";
 
 export default function DashboardPage() {
@@ -8,6 +9,7 @@ export default function DashboardPage() {
         <p className="text-sm text-muted-foreground">An overview of your leads and team activity.</p>
       </div>
 
+      <AiInsights />
       <AnalyticsOverview />
     </div>
   );

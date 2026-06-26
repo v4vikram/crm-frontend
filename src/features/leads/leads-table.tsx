@@ -16,6 +16,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getLeadPriority, type LeadPriority } from "./lead-priority";
 import type { Lead } from "./lead.types";
 
 interface LeadsTableProps {
@@ -39,6 +40,12 @@ const statusVariant = (status: Lead["status"]): "default" | "secondary" | "destr
   return "secondary";
 };
 
+const priorityVariant = (priority: LeadPriority): "destructive" | "secondary" | "outline" => {
+  if (priority === "HIGH") return "destructive";
+  if (priority === "MEDIUM") return "secondary";
+  return "outline";
+};
+
 export function LeadsTable({ leads, isLoading, onEdit, onDelete, onConvert }: LeadsTableProps) {
   return (
     <Table>
@@ -49,6 +56,7 @@ export function LeadsTable({ leads, isLoading, onEdit, onDelete, onConvert }: Le
           <TableHead>Status</TableHead>
           <TableHead>Source</TableHead>
           <TableHead>Assigned to</TableHead>
+          <TableHead>Priority</TableHead>
           <TableHead>Created</TableHead>
           <TableHead className="w-10" />
         </TableRow>
@@ -73,6 +81,9 @@ export function LeadsTable({ leads, isLoading, onEdit, onDelete, onConvert }: Le
                 <Skeleton className="h-4 w-24" />
               </TableCell>
               <TableCell>
+                <Skeleton className="h-5 w-16 rounded-full" />
+              </TableCell>
+              <TableCell>
                 <Skeleton className="h-4 w-20" />
               </TableCell>
               <TableCell />
@@ -81,7 +92,7 @@ export function LeadsTable({ leads, isLoading, onEdit, onDelete, onConvert }: Le
 
         {!isLoading && leads.length === 0 && (
           <TableRow>
-            <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+            <TableCell colSpan={8} className="h-24 text-center text-muted-foreground">
               No leads found.
             </TableCell>
           </TableRow>
@@ -107,6 +118,17 @@ export function LeadsTable({ leads, isLoading, onEdit, onDelete, onConvert }: Le
               </TableCell>
               <TableCell className="text-muted-foreground">
                 {lead.assignedTo?.name ?? "Unassigned"}
+              </TableCell>
+              <TableCell>
+                {(() => {
+                  const { priority, nextAction } = getLeadPriority(lead);
+                  return (
+                    <div className="flex flex-col gap-1">
+                      <Badge variant={priorityVariant(priority)}>{priority}</Badge>
+                      <span className="text-xs text-muted-foreground">{nextAction}</span>
+                    </div>
+                  );
+                })()}
               </TableCell>
               <TableCell className="text-muted-foreground">{formatDate(lead.createdAt)}</TableCell>
               <TableCell>

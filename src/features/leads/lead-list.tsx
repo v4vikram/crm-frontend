@@ -18,7 +18,7 @@ import { LeadsFilters } from "./leads-filters";
 import { LeadsPagination } from "./leads-pagination";
 import { LeadsTable } from "./leads-table";
 
-const PAGE_SIZE = 1;
+const PAGE_SIZE = 10;
 
 export function LeadList() {
   const isAdmin = useAuthStore((state) => state.user?.role === "ADMIN");

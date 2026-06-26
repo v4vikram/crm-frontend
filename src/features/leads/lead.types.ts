@@ -35,6 +35,7 @@ export interface Lead {
   assignedToId: string | null;
   assignedTo: LeadAssignee | null;
   createdById: string;
+  lastContactedAt: string | null;
   createdAt: string;
   updatedAt: string;
   customer: { id: string } | null;
