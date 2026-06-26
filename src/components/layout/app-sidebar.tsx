@@ -28,11 +28,11 @@ import { useAuthStore } from "@/features/auth/auth.store";
 const navItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Leads", url: "/dashboard/leads", icon: UserPlus },
-  { title: "Customers", url: "/dashboard/customers", icon: Users },
-  { title: "Tasks", url: "/dashboard/tasks", icon: CheckSquare },
-  { title: "Notes", url: "/dashboard/notes", icon: StickyNote },
-  { title: "Attachments", url: "/dashboard/attachments", icon: Paperclip },
   { title: "Users", url: "/dashboard/users", icon: ShieldCheck, adminOnly: true },
+  { title: "Customers", url: "/dashboard/customers", icon: Users },
+  // { title: "Tasks", url: "/dashboard/tasks", icon: CheckSquare },
+  // { title: "Notes", url: "/dashboard/notes", icon: StickyNote },
+  // { title: "Attachments", url: "/dashboard/attachments", icon: Paperclip },
 ];
 
 export function AppSidebar() {
@@ -54,7 +54,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupLabel>Workspace</SidebarGroupLabel>
           <SidebarGroupContent>
-            <SidebarMenu>
+            <SidebarMenu className="space-y-1.5">
               {visibleNavItems.map((item) => (
                 <SidebarMenuItem key={item.url}>
                   <SidebarMenuButton asChild isActive={pathname === item.url} tooltip={item.title}>
