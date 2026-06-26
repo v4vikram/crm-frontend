@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { useAuthStore } from "@/features/auth/auth.store";
 import { useLogout } from "@/features/auth/use-auth";
+import { NotificationBell } from "@/features/notifications/notification-bell";
 import { ThemeToggle } from "./theme-toggle";
 
 export function Topbar() {
@@ -32,6 +33,7 @@ export function Topbar() {
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="h-4" />
       <div className="flex-1" />
+      <NotificationBell />
       <ThemeToggle />
       <DropdownMenu>
         <DropdownMenuTrigger className="flex items-center gap-2 rounded-md p-1 pr-2 hover:bg-accent">
